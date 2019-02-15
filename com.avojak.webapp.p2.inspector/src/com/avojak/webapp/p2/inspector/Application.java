@@ -23,10 +23,16 @@ import com.avojak.webapp.p2.inspector.server.handler.InstallableUnitHandler;
 import com.avojak.webapp.p2.inspector.server.handler.RepositoryDescriptionHandler;
 import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
 import com.avojak.webapp.p2.inspector.servlet.RootHandler;
+import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class Application implements IApplication {
+	
+	private static final String PORT_ENV_VAR = "PORT";
+	private static final int DEFAULT_PORT = 8081;
+	private static final int MAX_THREADS = 500;
+	private static final long IDLE_TIMEOUT = 30000L;
 
 	@Override
 	public Object start(final IApplicationContext applicationContext) throws Exception {
@@ -36,20 +42,19 @@ public class Application implements IApplication {
 //		final IArtifactRepositoryManager artifactManager = (IArtifactRepositoryManager) agent
 //				.getService(IArtifactRepositoryManager.SERVICE_NAME);
 
-//		final QueuedThreadPool threadPool = new QueuedThreadPool();
-//		threadPool.setMaxThreads(500);
+		final QueuedThreadPool threadPool = new QueuedThreadPool();
+		threadPool.setMaxThreads(MAX_THREADS);
 
-		final Server server = new Server(Integer.valueOf(System.getenv("PORT")));
+		final Server server = new Server(threadPool);
 
-//		final HttpConfiguration httpConfig = new HttpConfiguration();
-//		httpConfig.setSecurePort(8443);
-//		httpConfig.setSecureScheme("https");
+		final HttpConfiguration httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		httpConfig.setSendDateHeader(false);
 
-//		final ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-//		http.setPort(Integer.valueOf(System.getenv("PORT")));
-//		http.setIdleTimeout(30000L);
-//		http.setHost("0.0.0.0");
-//		server.addConnector(http);
+		final ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+		http.setPort(getPort());
+		http.setIdleTimeout(IDLE_TIMEOUT);
+		server.addConnector(http);
 
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -79,6 +84,11 @@ public class Application implements IApplication {
 		result = provider.createAgent(location);
 		Activator.getContext().ungetService(providerRef);
 		return result;
+	}
+	
+	private int getPort() {
+		final Optional<String> portEnvironmentVariable = Optional.fromNullable(System.getenv(PORT_ENV_VAR));
+		return portEnvironmentVariable.isPresent() ? Integer.valueOf(portEnvironmentVariable.get()) : DEFAULT_PORT;
 	}
 
 	private Handler[] createHandlers(final IMetadataRepositoryManager metadataManager,
