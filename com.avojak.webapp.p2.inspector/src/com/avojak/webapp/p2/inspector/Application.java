@@ -1,111 +1,58 @@
 package com.avojak.webapp.p2.inspector;
 
-import java.net.URI;
-
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.equinox.p2.core.IProvisioningAgent;
-import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
-import org.eclipse.equinox.p2.core.ProvisionException;
-import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
-import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.osgi.framework.ServiceReference;
 
-import com.avojak.webapp.p2.inspector.server.handler.InstallableUnitHandler;
-import com.avojak.webapp.p2.inspector.server.handler.RepositoryDescriptionHandler;
-import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
-import com.avojak.webapp.p2.inspector.servlet.RootHandler;
+import com.avojak.webapp.p2.inspector.osgi.ProvisioningAgentProvider;
+import com.avojak.webapp.p2.inspector.server.ConnectorFactory;
+import com.avojak.webapp.p2.inspector.server.HandlerFactory;
+import com.avojak.webapp.p2.inspector.server.HttpConfigurationFactory;
+import com.avojak.webapp.p2.inspector.server.P2InspectorServerFactory;
+import com.avojak.webapp.p2.inspector.server.ThreadPoolFactory;
 import com.google.common.base.Optional;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * The P2 Inspector {@link IApplication} implementation.
+ */
 public class Application implements IApplication {
-	
+
 	private static final String PORT_ENV_VAR = "PORT";
 	private static final int DEFAULT_PORT = 8081;
-	private static final int MAX_THREADS = 500;
+	private static final int MAX_THREADS = 100;
 	private static final long IDLE_TIMEOUT = 30000L;
+
+	private final P2InspectorServerFactory serverFactory;
+
+	/**
+	 * Default constructor.
+	 */
+	public Application() {
+		this(new P2InspectorServerFactory(new ThreadPoolFactory(), new ConnectorFactory(new HttpConfigurationFactory()),
+				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
+						new GsonBuilder().setPrettyPrinting().create())));
+	}
+
+	/**
+	 * Constructor for testing purposes to enable dependency injection.
+	 */
+	protected Application(final P2InspectorServerFactory serverFactory) {
+		this.serverFactory = serverFactory;
+	}
 
 	@Override
 	public Object start(final IApplicationContext applicationContext) throws Exception {
-		final IProvisioningAgent agent = setupAgent(null);
-		final IMetadataRepositoryManager metadataManager = (IMetadataRepositoryManager) agent
-				.getService(IMetadataRepositoryManager.SERVICE_NAME);
-//		final IArtifactRepositoryManager artifactManager = (IArtifactRepositoryManager) agent
-//				.getService(IArtifactRepositoryManager.SERVICE_NAME);
-
-		final QueuedThreadPool threadPool = new QueuedThreadPool();
-		threadPool.setMaxThreads(MAX_THREADS);
-
-		final Server server = new Server(threadPool);
-
-		final HttpConfiguration httpConfig = new HttpConfiguration();
-		httpConfig.setSendServerVersion(false);
-		httpConfig.setSendDateHeader(false);
-
-		final ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-		http.setPort(getPort());
-		http.setIdleTimeout(IDLE_TIMEOUT);
-		server.addConnector(http);
-
-		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-		final ContextHandlerCollection contexts = new ContextHandlerCollection();
-		contexts.setHandlers(createHandlers(metadataManager, null, gson));
-		server.setHandler(contexts);
-
+		final Server server = serverFactory.create(getPort());
 		server.start();
 		server.join();
 
 		return IApplication.EXIT_OK;
 	}
 
-	private IProvisioningAgent setupAgent(final URI location) throws ProvisionException {
-		IProvisioningAgent result = null;
-		ServiceReference<?> providerRef = Activator.getContext()
-				.getServiceReference(IProvisioningAgentProvider.SERVICE_NAME);
-		if (providerRef == null) {
-			throw new RuntimeException("No provisioning agent provider is available"); //$NON-NLS-1$
-		}
-		IProvisioningAgentProvider provider = (IProvisioningAgentProvider) Activator.getContext()
-				.getService(providerRef);
-		if (provider == null) {
-			throw new RuntimeException("No provisioning agent provider is available"); //$NON-NLS-1$
-		}
-		// obtain agent for currently running system
-		result = provider.createAgent(location);
-		Activator.getContext().ungetService(providerRef);
-		return result;
-	}
-	
 	private int getPort() {
 		final Optional<String> portEnvironmentVariable = Optional.fromNullable(System.getenv(PORT_ENV_VAR));
 		return portEnvironmentVariable.isPresent() ? Integer.valueOf(portEnvironmentVariable.get()) : DEFAULT_PORT;
-	}
-
-	private Handler[] createHandlers(final IMetadataRepositoryManager metadataManager,
-			final IArtifactRepositoryManager artifactManager, final Gson gson) {
-		final ContextHandler rootContext = new ContextHandler("/");
-		rootContext.setHandler(new RootHandler(metadataManager, artifactManager, gson));
-
-		final ContextHandler nameContext = new ContextHandler("/repository/name");
-		nameContext.setHandler(new RepositoryNameHandler(metadataManager, artifactManager, gson));
-
-		final ContextHandler descriptionContext = new ContextHandler("/repository/description");
-		descriptionContext.setHandler(new RepositoryDescriptionHandler(metadataManager, artifactManager, gson));
-
-		final ContextHandler installableUnitContext = new ContextHandler("/repository/iu");
-		installableUnitContext.setHandler(new InstallableUnitHandler(metadataManager, artifactManager, gson));
-
-		return new Handler[] { rootContext, nameContext, descriptionContext, installableUnitContext };
 	}
 
 	@Override

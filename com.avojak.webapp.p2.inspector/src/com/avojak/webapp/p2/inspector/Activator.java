@@ -3,10 +3,18 @@ package com.avojak.webapp.p2.inspector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Implementation of {@link BundleActivator} for the plugin.
+ */
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
 
+	/**
+	 * Gets the {@link BundleContext}.
+	 * 
+	 * @return The {@link BundleContext}.
+	 */
 	static BundleContext getContext() {
 		return context;
 	}
