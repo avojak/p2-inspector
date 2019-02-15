@@ -1,0 +1,11 @@
+*.class
+*.jar
+*.war
+*.ear
+bin/
+target/
+
+*.prefs
+
+.project
+.settings/

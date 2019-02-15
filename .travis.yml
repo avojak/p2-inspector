@@ -1,0 +1,37 @@
+language: java
+jdk:
+- oraclejdk8
+sudo: required
+services:
+- docker
+
+env:
+  global:
+    secure: nVPvhsoghNDVyH7xvJzqmMyun1UyYcMlxEa8IypGS+p0gjW40oCS0W7D6h9KLyDzcKJ2ymz3pk9Y2Uv0/rw37w0Ng+m3DKNnJsVltQVcLOphcNDiKbu4orwckIjGwuaOikC2Hec0fgp73xpUDxP8tPHrA3P5ne3QXOa0RC/5WbMS0kmin9or1i1ZmsRoaXl+ZJ76uAAUwE1LLa0yzbPk/BqFhb9MBbqx5oaDECIu2b7lbgQcZMevZZFR3bF6JhR6QyGa1lMpAdjMTB1WOuggW26Wt1UXHDgS/rBRR+I2EPQPTqQG6cMnxvYFK0CxGgGQoaBS1gfdIIAgGJEgWfmt897sa8p8zhnWs5MrvOUJTI6U1VWetjiMmQZSlsM44EUsTIkasfZ8XM21+5PzL3Q+zLHze65FzPHWIRcvIx8+c0kx5Kcz1Qk+9MKvIuAlhl4bJ2GrnQYyxGnZ6ivk82Ml0+PTw71b7aSwzdI4ZX/sJSkd2AWS1gB3qNwQMBajrNao/Yp7NY6Deei1gaoIy6Khxcd9rjqeQRRep6LjyHw9LKcoxQTqwI2thPhn3s40d6Y3lDA5AUJbMovXHHT7EtXHqgcmupsYUbryQRA5QXBMl9dJaF2boKpx2CWX3CpEtyBK9+wp6FxZ63NM8LoZUjtbiBaSoiCyDLKmYome02fmX6w=
+
+before_script:
+# Install the Heroku CLI
+- wget -qO- https://toolbelt.heroku.com/install.sh | sh
+# Login to Docker Registries (Docker Hub and Heroku)
+- echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+- echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+# Change directories down into the releng package for the Maven build
+- cd com.avojak.webapp.p2.inspector.releng
+
+script:
+- mvn clean verify
+- cd ..
+- docker build --tag avojak/p2-inspector:1.0.0-SNAPSHOT --tag avojak/p2-inspector:latest .
+- docker tag avojak/p2-inspector:latest registry.heroku.com/p2-inspector/web
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    # Push to Docker Hub and Heroku, then perform the Heroku release
+    docker push avojak/p2-inspector:1.0.0-SNAPSHOT;
+    docker push avojak/p2-inspector:latest;
+    docker push registry.heroku.com/p2-inspector/web;
+    heroku container:release web --app p2-inspector
+  on:
+    branch: master
