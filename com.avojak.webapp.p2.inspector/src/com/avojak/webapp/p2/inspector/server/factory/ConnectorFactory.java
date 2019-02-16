@@ -1,4 +1,4 @@
-package com.avojak.webapp.p2.inspector.server;
+package com.avojak.webapp.p2.inspector.server.factory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

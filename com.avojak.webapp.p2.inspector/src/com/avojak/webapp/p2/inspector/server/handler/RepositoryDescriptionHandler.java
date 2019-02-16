@@ -3,11 +3,7 @@ package com.avojak.webapp.p2.inspector.server.handler;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.PrintWriter;
-import java.util.Set;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.equinox.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
@@ -16,10 +12,10 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import com.google.gson.Gson;
 
 /**
- * Implementation of {@link AbstractRequestHandler} to retrieve the repository
+ * Implementation of {@link AbstractMetadataRequestHandler} to retrieve the repository
  * description.
  */
-public class RepositoryDescriptionHandler extends AbstractRequestHandler {
+public class RepositoryDescriptionHandler extends AbstractMetadataRequestHandler {
 
 	public RepositoryDescriptionHandler(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager, final Gson gson) {

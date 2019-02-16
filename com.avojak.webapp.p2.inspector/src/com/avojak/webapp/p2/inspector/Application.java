@@ -5,11 +5,11 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jetty.server.Server;
 
 import com.avojak.webapp.p2.inspector.osgi.ProvisioningAgentProvider;
-import com.avojak.webapp.p2.inspector.server.ConnectorFactory;
-import com.avojak.webapp.p2.inspector.server.HandlerFactory;
-import com.avojak.webapp.p2.inspector.server.HttpConfigurationFactory;
-import com.avojak.webapp.p2.inspector.server.P2InspectorServerFactory;
-import com.avojak.webapp.p2.inspector.server.ThreadPoolFactory;
+import com.avojak.webapp.p2.inspector.server.factory.ConnectorFactory;
+import com.avojak.webapp.p2.inspector.server.factory.HandlerFactory;
+import com.avojak.webapp.p2.inspector.server.factory.HttpConfigurationFactory;
+import com.avojak.webapp.p2.inspector.server.factory.P2InspectorServerFactory;
+import com.avojak.webapp.p2.inspector.server.factory.ThreadPoolFactory;
 import com.google.common.base.Optional;
 import com.google.gson.GsonBuilder;
 
@@ -20,8 +20,8 @@ public class Application implements IApplication {
 
 	private static final String PORT_ENV_VAR = "PORT";
 	private static final int DEFAULT_PORT = 8081;
-	private static final int MAX_THREADS = 100;
-	private static final long IDLE_TIMEOUT = 30000L;
+//	private static final int MAX_THREADS = 100;
+//	private static final long IDLE_TIMEOUT = 30000L;
 
 	private final P2InspectorServerFactory serverFactory;
 

@@ -15,7 +15,11 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
 import com.google.gson.Gson;
 
-public class InstallableUnitHandler extends AbstractRequestHandler {
+/**
+ * Implementation of {@link AbstractMetadataRequestHandler} to retrieve the
+ * installable units.
+ */
+public class InstallableUnitHandler extends AbstractMetadataRequestHandler {
 
 	public InstallableUnitHandler(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager, final Gson gson) {

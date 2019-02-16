@@ -12,10 +12,10 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import com.google.gson.Gson;
 
 /**
- * Implementation of {@link AbstractRequestHandler} to retrieve the repository
+ * Implementation of {@link AbstractMetadataRequestHandler} to retrieve the repository
  * name.
  */
-public class RepositoryNameHandler extends AbstractRequestHandler {
+public class RepositoryNameHandler extends AbstractMetadataRequestHandler {
 
 	public RepositoryNameHandler(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager, final Gson gson) {

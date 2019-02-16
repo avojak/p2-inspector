@@ -1,4 +1,4 @@
-package com.avojak.webapp.p2.inspector.server;
+package com.avojak.webapp.p2.inspector.server.factory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -13,7 +13,7 @@ import com.avojak.webapp.p2.inspector.osgi.ProvisioningAgentProvider;
 import com.avojak.webapp.p2.inspector.server.handler.InstallableUnitHandler;
 import com.avojak.webapp.p2.inspector.server.handler.RepositoryDescriptionHandler;
 import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
-import com.avojak.webapp.p2.inspector.servlet.RootHandler;
+import com.avojak.webapp.p2.inspector.server.handler.RootHandler;
 import com.google.gson.Gson;
 
 /**
@@ -51,7 +51,7 @@ public class HandlerFactory {
 		final IArtifactRepositoryManager artifactManager = null;
 
 		final ContextHandler rootContext = new ContextHandler("/");
-		rootContext.setHandler(new RootHandler(metadataManager, artifactManager, gson));
+		rootContext.setHandler(new RootHandler());
 
 		final ContextHandler nameContext = new ContextHandler("/repository/name");
 		nameContext.setHandler(new RepositoryNameHandler(metadataManager, artifactManager, gson));

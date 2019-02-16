@@ -1,4 +1,4 @@
-package com.avojak.webapp.p2.inspector.server;
+package com.avojak.webapp.p2.inspector.server.factory;
 
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;

@@ -1,4 +1,4 @@
-package com.avojak.webapp.p2.inspector.server;
+package com.avojak.webapp.p2.inspector.server.factory;
 
 import org.eclipse.jetty.server.HttpConfiguration;
 
