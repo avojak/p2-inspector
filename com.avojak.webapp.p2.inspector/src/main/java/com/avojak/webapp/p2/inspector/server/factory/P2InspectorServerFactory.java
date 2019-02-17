@@ -3,7 +3,6 @@ package com.avojak.webapp.p2.inspector.server.factory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ErrorHandler;
 
 /**
  * Factory class to create and configure the underlying server.
@@ -31,15 +30,11 @@ public class P2InspectorServerFactory {
 	/**
 	 * Creates the server.
 	 * 
-	 * @param port The port number.
 	 * @return The non-null {@link Server}.
 	 */
-	public Server create(final int port) {
-		final Server server = new Server(threadPoolFactory.create(100));
-		server.addBean(new ErrorHandler() {
-			
-		});
-		server.addConnector(connectorFactory.create(server, port, 30000L));
+	public Server create() {
+		final Server server = new Server(threadPoolFactory.create());
+		server.addConnector(connectorFactory.create(server));
 		server.setHandler(handlerFactory.create());
 		return server;
 	}

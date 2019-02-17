@@ -10,7 +10,6 @@ import com.avojak.webapp.p2.inspector.server.factory.HandlerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.HttpConfigurationFactory;
 import com.avojak.webapp.p2.inspector.server.factory.P2InspectorServerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.ThreadPoolFactory;
-import com.google.common.base.Optional;
 import com.google.gson.GsonBuilder;
 
 /**
@@ -18,18 +17,14 @@ import com.google.gson.GsonBuilder;
  */
 public class Application implements IApplication {
 
-	private static final String PORT_ENV_VAR = "PORT";
-	private static final int DEFAULT_PORT = 8081;
-//	private static final int MAX_THREADS = 100;
-//	private static final long IDLE_TIMEOUT = 30000L;
-
 	private final P2InspectorServerFactory serverFactory;
 
 	/**
 	 * Default constructor.
 	 */
 	public Application() {
-		this(new P2InspectorServerFactory(new ThreadPoolFactory(), new ConnectorFactory(new HttpConfigurationFactory()),
+		this(new P2InspectorServerFactory(new ThreadPoolFactory(ApplicationProperties.getProperties()),
+				new ConnectorFactory(new HttpConfigurationFactory(), ApplicationProperties.getProperties()),
 				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
 						new GsonBuilder().setPrettyPrinting().create())));
 	}
@@ -43,21 +38,16 @@ public class Application implements IApplication {
 
 	@Override
 	public Object start(final IApplicationContext applicationContext) throws Exception {
-		final Server server = serverFactory.create(getPort());
+		final Server server = serverFactory.create();
 		server.start();
 		server.join();
 
 		return IApplication.EXIT_OK;
 	}
 
-	private int getPort() {
-		final Optional<String> portEnvironmentVariable = Optional.fromNullable(System.getenv(PORT_ENV_VAR));
-		return portEnvironmentVariable.isPresent() ? Integer.valueOf(portEnvironmentVariable.get()) : DEFAULT_PORT;
-	}
-
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		// Nothing to do
 	}
 
 }
