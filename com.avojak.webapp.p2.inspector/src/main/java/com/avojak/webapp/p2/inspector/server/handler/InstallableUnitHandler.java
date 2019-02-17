@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.PrintWriter;
 import java.util.Set;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.query.QueryUtil;
@@ -22,8 +23,8 @@ import com.google.gson.Gson;
 public class InstallableUnitHandler extends AbstractMetadataRequestHandler {
 
 	public InstallableUnitHandler(final IMetadataRepositoryManager metadataManager,
-			final IArtifactRepositoryManager artifactManager, final Gson gson) {
-		super(metadataManager, artifactManager, gson);
+			final IArtifactRepositoryManager artifactManager, final Gson gson, final ILog log) {
+		super(metadataManager, artifactManager, gson, log);
 	}
 
 	@Override

@@ -14,8 +14,11 @@ import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
@@ -23,6 +26,7 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.jetty.server.Request;
 
+import com.avojak.webapp.p2.inspector.Activator;
 import com.avojak.webapp.p2.inspector.server.exception.BadRequestException;
 import com.google.gson.Gson;
 
@@ -30,7 +34,7 @@ import com.google.gson.Gson;
  * Base request handler for metadata requests.
  */
 public abstract class AbstractMetadataRequestHandler extends AbstractRequestHandler {
-	
+
 	protected final IMetadataRepositoryManager metadataManager;
 //	protected final IArtifactRepositoryManager artifactManager;
 	protected final Gson gson;
@@ -44,9 +48,9 @@ public abstract class AbstractMetadataRequestHandler extends AbstractRequestHand
 	 *                        null.
 	 * @param gson            The {@link Gson}. Cannot be null.
 	 */
-	public AbstractMetadataRequestHandler(final IMetadataRepositoryManager metadataManager,
-			final IArtifactRepositoryManager artifactManager, final Gson gson) {
-		super();
+	protected AbstractMetadataRequestHandler(final IMetadataRepositoryManager metadataManager,
+			final IArtifactRepositoryManager artifactManager, final Gson gson, final ILog log) {
+		super(log);
 		this.metadataManager = checkNotNull(metadataManager, "metadataManager cannot be null");
 //		this.artifactManager = checkNotNull(artifactManager, "artifactManager cannot be null");
 		this.gson = checkNotNull(gson, "gson cannot be null");
@@ -66,6 +70,7 @@ public abstract class AbstractMetadataRequestHandler extends AbstractRequestHand
 			metadataRepository = metadataManager.loadRepository(repo, new NullProgressMonitor());
 //			artifactRepository = artifactManager.loadRepository(repo, new NullProgressMonitor());
 		} catch (final ProvisionException | OperationCanceledException e) {
+			log.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Failed to load repository: " + repo.toString(), e));
 			throw new ServletException(e);
 		}
 

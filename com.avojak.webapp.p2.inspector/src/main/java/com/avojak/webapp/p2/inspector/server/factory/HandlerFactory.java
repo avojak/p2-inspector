@@ -2,6 +2,7 @@ package com.avojak.webapp.p2.inspector.server.factory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
@@ -23,16 +24,18 @@ public class HandlerFactory {
 
 	private final ProvisioningAgentProvider agentProvider;
 	private final Gson gson;
-
+	private final ILog log;
+	
 	/**
 	 * Constructor.
 	 * 
 	 * @param agentProvider The {@link ProvisioningAgentProvider}. Cannot be null.
 	 * @param gson          The {@link Gson}. Cannot be null.
 	 */
-	public HandlerFactory(final ProvisioningAgentProvider agentProvider, final Gson gson) {
+	public HandlerFactory(final ProvisioningAgentProvider agentProvider, final Gson gson, final ILog log) {
 		this.agentProvider = checkNotNull(agentProvider, "agentProvider cannot be null");
 		this.gson = checkNotNull(gson, "gson cannot be null");
+		this.log = checkNotNull(log, "log cannot be null");
 	}
 
 	/**
@@ -51,16 +54,16 @@ public class HandlerFactory {
 		final IArtifactRepositoryManager artifactManager = null;
 
 		final ContextHandler rootContext = new ContextHandler("/");
-		rootContext.setHandler(new RootHandler());
+		rootContext.setHandler(new RootHandler(log));
 
 		final ContextHandler nameContext = new ContextHandler("/repository/name");
-		nameContext.setHandler(new RepositoryNameHandler(metadataManager, artifactManager, gson));
+		nameContext.setHandler(new RepositoryNameHandler(metadataManager, artifactManager, gson, log));
 
 		final ContextHandler descriptionContext = new ContextHandler("/repository/description");
-		descriptionContext.setHandler(new RepositoryDescriptionHandler(metadataManager, artifactManager, gson));
+		descriptionContext.setHandler(new RepositoryDescriptionHandler(metadataManager, artifactManager, gson, log));
 
 		final ContextHandler installableUnitContext = new ContextHandler("/repository/iu");
-		installableUnitContext.setHandler(new InstallableUnitHandler(metadataManager, artifactManager, gson));
+		installableUnitContext.setHandler(new InstallableUnitHandler(metadataManager, artifactManager, gson, log));
 
 		final Handler[] handlers = new Handler[] { rootContext, nameContext, descriptionContext,
 				installableUnitContext };

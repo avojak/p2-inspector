@@ -1,5 +1,7 @@
 package com.avojak.webapp.p2.inspector.server.handler;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -7,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -18,6 +21,12 @@ import com.google.common.net.MediaType;
  */
 public abstract class AbstractRequestHandler extends AbstractHandler {
 
+	protected final ILog log;
+	
+	protected AbstractRequestHandler(final ILog log) {
+		this.log = checkNotNull(log, "log cannot be null");
+	}
+	
 	@Override
 	public void handle(final String target, final Request baseRequest, final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException, ServletException {
@@ -26,7 +35,6 @@ public abstract class AbstractRequestHandler extends AbstractHandler {
 			response.setContentType(MediaType.JSON_UTF_8.toString());
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (final BadRequestException e) {
-			// TODO: Log this
 			e.printStackTrace(response.getWriter());
 			response.setContentType(MediaType.HTML_UTF_8.toString());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

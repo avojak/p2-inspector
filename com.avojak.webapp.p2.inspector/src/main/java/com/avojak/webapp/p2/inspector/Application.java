@@ -1,5 +1,6 @@
 package com.avojak.webapp.p2.inspector;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jetty.server.Server;
@@ -26,7 +27,8 @@ public class Application implements IApplication {
 		this(new P2InspectorServerFactory(new ThreadPoolFactory(ApplicationProperties.getProperties()),
 				new ConnectorFactory(new HttpConfigurationFactory(), ApplicationProperties.getProperties()),
 				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
-						new GsonBuilder().setPrettyPrinting().create())));
+						new GsonBuilder().setPrettyPrinting().create(),
+						Platform.getLog(Activator.getContext().getBundle()))));
 	}
 
 	/**

@@ -7,6 +7,8 @@ import org.osgi.framework.BundleContext;
  * Implementation of {@link BundleActivator} for the plugin.
  */
 public class Activator implements BundleActivator {
+	
+	public static final String PLUGIN_ID = "com.avojak.webapp.p2.inspector"; //$NON-NLS-1$
 
 	private static BundleContext context;
 

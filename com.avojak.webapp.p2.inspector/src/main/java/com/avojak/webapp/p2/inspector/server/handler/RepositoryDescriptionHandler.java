@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.PrintWriter;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
@@ -18,8 +19,8 @@ import com.google.gson.Gson;
 public class RepositoryDescriptionHandler extends AbstractMetadataRequestHandler {
 
 	public RepositoryDescriptionHandler(final IMetadataRepositoryManager metadataManager,
-			final IArtifactRepositoryManager artifactManager, final Gson gson) {
-		super(metadataManager, artifactManager, gson);
+			final IArtifactRepositoryManager artifactManager, final Gson gson, final ILog log) {
+		super(metadataManager, artifactManager, gson, log);
 	}
 
 	@Override
