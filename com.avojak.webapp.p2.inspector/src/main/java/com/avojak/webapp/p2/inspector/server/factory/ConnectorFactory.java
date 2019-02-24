@@ -42,6 +42,7 @@ public class ConnectorFactory {
 	 * @return The non-null {@link Connector}.
 	 */
 	public Connector create(final Server server) {
+		checkNotNull(server, "server cannot be null");
 		final HttpConfiguration httpConfig = httpConfigurationFactory.create();
 		final ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
 		http.setPort(getPort());

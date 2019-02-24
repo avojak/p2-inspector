@@ -37,11 +37,11 @@ public class ProvisioningAgentProvider {
 		IProvisioningAgent result = null;
 		ServiceReference<?> providerRef = bundleContext.getServiceReference(IProvisioningAgentProvider.SERVICE_NAME);
 		if (providerRef == null) {
-			throw new RuntimeException("No provisioning agent provider is available"); //$NON-NLS-1$
+			throw new RuntimeException("No IProvisioningAgentProvider service reference is available"); //$NON-NLS-1$
 		}
 		IProvisioningAgentProvider provider = (IProvisioningAgentProvider) bundleContext.getService(providerRef);
 		if (provider == null) {
-			throw new RuntimeException("No provisioning agent provider is available"); //$NON-NLS-1$
+			throw new RuntimeException("No IProvisioningAgentProvider service is available"); //$NON-NLS-1$
 		}
 		result = provider.createAgent(location);
 		bundleContext.ungetService(providerRef);

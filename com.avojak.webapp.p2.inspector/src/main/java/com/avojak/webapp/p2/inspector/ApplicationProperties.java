@@ -1,6 +1,8 @@
 package com.avojak.webapp.p2.inspector;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -36,8 +38,13 @@ public class ApplicationProperties {
 	public static ApplicationProperties getProperties() {
 		if (INSTANCE == null) {
 			final Properties properties = new Properties();
+			final URL resource = Activator.getContext().getBundle().getResource("application.properties");
+			if (resource == null) {
+				throw new RuntimeException(
+						new FileNotFoundException("Resource file [application.properties] could not be found"));
+			}
 			try {
-				properties.load(Activator.getContext().getBundle().getResource("application.properties").openStream());
+				properties.load(resource.openStream());
 			} catch (final IOException e) {
 				throw new RuntimeException(e);
 			}

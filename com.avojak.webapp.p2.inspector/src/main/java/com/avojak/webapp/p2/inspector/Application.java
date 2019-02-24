@@ -34,7 +34,7 @@ public class Application implements IApplication {
 	/**
 	 * Constructor for testing purposes to enable dependency injection.
 	 */
-	protected Application(final P2InspectorServerFactory serverFactory) {
+	public Application(final P2InspectorServerFactory serverFactory) {
 		this.serverFactory = serverFactory;
 	}
 
