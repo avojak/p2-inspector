@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hydrogen Test Fragment
+Bundle-SymbolicName: com.avojak.webapp.p2.inspector.tests
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: com.avojak.webapp.p2.inspector;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: .
+Require-Bundle: org.junit,
+ org.mockito,
+ org.objenesis
+Automatic-Module-Name: com.avojak.webapp.p2.inspector.tests

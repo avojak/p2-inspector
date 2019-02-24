@@ -4,10 +4,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>com.avojak.webapp.p2.inspector.releng</artifactId>
-	<packaging>pom</packaging>
-	<name>P2 Inspector Releng Project</name>
-
 	<parent>
 		<groupId>com.avojak.webapp</groupId>
 		<artifactId>parent</artifactId>
@@ -15,16 +11,12 @@
 		<relativePath>../com.avojak.webapp.p2.inspector.releng/parent</relativePath>
 	</parent>
 
+	<name>P2 Inspector Tests</name>
+	<artifactId>com.avojak.webapp.p2.inspector.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+
 	<properties>
 		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
-
-	<modules>
-		<module>../com.avojak.webapp.p2.inspector</module>
-		<module>../com.avojak.webapp.p2.inspector.tests</module>
-		<module>../com.avojak.webapp.p2.inspector.tests.report</module>
-		<module>../com.avojak.webapp.p2.inspector.packaging</module>
-		<module>../com.avojak.webapp.p2.inspector.target</module>
-	</modules>
 
 </project>

@@ -14,7 +14,7 @@ import org.osgi.framework.ServiceReference;
  * Class to provide access to the provisioning agent.
  */
 public class ProvisioningAgentProvider {
-	
+
 	private final BundleContext bundleContext;
 
 	/**
