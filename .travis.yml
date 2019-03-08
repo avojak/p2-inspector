@@ -19,7 +19,7 @@ before_script:
 - cd com.avojak.webapp.p2.inspector.releng
 
 script:
-- mvn clean verify
+- mvn clean verify coveralls:report
 - cd ..
 - docker build --tag avojak/p2-inspector:1.0.0-SNAPSHOT --tag avojak/p2-inspector:latest .
 - docker tag avojak/p2-inspector:latest registry.heroku.com/p2-inspector/web
