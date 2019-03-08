@@ -1,6 +1,5 @@
 package com.avojak.webapp.p2.inspector;
 
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -29,7 +28,6 @@ import com.google.gson.GsonBuilder;
 public class Application implements IApplication {
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-	private static final ILog LOG = Platform.getLog(Activator.getContext().getBundle());
 	private static final ApplicationProperties PROPERTIES = ApplicationProperties.getProperties();
 
 	private final P2InspectorServerFactory serverFactory;
@@ -42,10 +40,14 @@ public class Application implements IApplication {
 		this(new P2InspectorServerFactory(new ThreadPoolFactory(PROPERTIES),
 				new ConnectorFactory(new HttpConfigurationFactory(), PROPERTIES),
 				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
-						new RootContextHandlerFactory(new RootHandler.Factory(LOG)),
-						new RepositoryNameContextHandlerFactory(new RepositoryNameHandler.Factory(GSON, LOG)),
-						new RepositoryDescriptionContextHandlerFactory(new RepositoryDescriptionHandler.Factory(GSON, LOG)),
-						new InstallableUnitContextHandlerFactory(new InstallableUnitHandler.Factory(GSON, LOG)))));
+						new RootContextHandlerFactory(new RootHandler.Factory(
+								Platform.getLog(Activator.getContext().getBundle()))),
+						new RepositoryNameContextHandlerFactory(new RepositoryNameHandler.Factory(GSON, 
+								Platform.getLog(Activator.getContext().getBundle()))),
+						new RepositoryDescriptionContextHandlerFactory(new RepositoryDescriptionHandler.Factory(GSON, 
+								Platform.getLog(Activator.getContext().getBundle()))),
+						new InstallableUnitContextHandlerFactory(new InstallableUnitHandler.Factory(GSON, 
+								Platform.getLog(Activator.getContext().getBundle()))))));
 		//@formatter:on
 	}
 
