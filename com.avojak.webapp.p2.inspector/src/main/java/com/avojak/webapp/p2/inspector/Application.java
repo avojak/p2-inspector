@@ -28,7 +28,6 @@ import com.google.gson.GsonBuilder;
 public class Application implements IApplication {
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-	private static final ApplicationProperties PROPERTIES = ApplicationProperties.getProperties();
 
 	private final P2InspectorServerFactory serverFactory;
 
@@ -37,8 +36,8 @@ public class Application implements IApplication {
 	 */
 	public Application() {
 		//@formatter:off
-		this(new P2InspectorServerFactory(new ThreadPoolFactory(PROPERTIES),
-				new ConnectorFactory(new HttpConfigurationFactory(), PROPERTIES),
+		this(new P2InspectorServerFactory(new ThreadPoolFactory(ApplicationProperties.getProperties()),
+				new ConnectorFactory(new HttpConfigurationFactory(), ApplicationProperties.getProperties()),
 				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
 						new RootContextHandlerFactory(new RootHandler.Factory(
 								Platform.getLog(Activator.getContext().getBundle()))),
