@@ -69,6 +69,8 @@ Under the Orbit site:
 * JAXP XML
 * mockito-core
 ** Optionally add the source bundle
+* SLF4J Simple Binding
+** Optionally add the source bundle
 
 The resulting source should look like this:
 
@@ -92,6 +94,8 @@ The resulting source should look like this:
 			<unit id="com.google.gson.source" version="2.8.2.v20180104-1110"/>
 			<unit id="net.bytebuddy.byte-buddy-agent" version="1.9.0.v20181106-1534"/>
 			<unit id="net.bytebuddy.byte-buddy-agent.source" version="1.9.0.v20181106-1534"/>
+			<unit id="org.slf4j.binding.simple" version="1.7.10.v20160301-1109"/>
+			<unit id="org.slf4j.binding.simple.source" version="1.7.10.v20160301-1109"/>
 		</location>
 	</locations>
 </target>

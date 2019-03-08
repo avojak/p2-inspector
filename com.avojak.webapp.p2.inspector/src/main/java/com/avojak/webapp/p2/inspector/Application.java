@@ -1,5 +1,6 @@
 package com.avojak.webapp.p2.inspector;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -11,6 +12,15 @@ import com.avojak.webapp.p2.inspector.server.factory.HandlerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.HttpConfigurationFactory;
 import com.avojak.webapp.p2.inspector.server.factory.P2InspectorServerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.ThreadPoolFactory;
+import com.avojak.webapp.p2.inspector.server.handler.InstallableUnitHandler;
+import com.avojak.webapp.p2.inspector.server.handler.RepositoryDescriptionHandler;
+import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
+import com.avojak.webapp.p2.inspector.server.handler.RootHandler;
+import com.avojak.webapp.p2.inspector.server.handler.factory.InstallableUnitContextHandlerFactory;
+import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryDescriptionContextHandlerFactory;
+import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryNameContextHandlerFactory;
+import com.avojak.webapp.p2.inspector.server.handler.factory.RootContextHandlerFactory;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
@@ -18,17 +28,25 @@ import com.google.gson.GsonBuilder;
  */
 public class Application implements IApplication {
 
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	private static final ILog LOG = Platform.getLog(Activator.getContext().getBundle());
+	private static final ApplicationProperties PROPERTIES = ApplicationProperties.getProperties();
+
 	private final P2InspectorServerFactory serverFactory;
 
 	/**
 	 * Default constructor.
 	 */
 	public Application() {
-		this(new P2InspectorServerFactory(new ThreadPoolFactory(ApplicationProperties.getProperties()),
-				new ConnectorFactory(new HttpConfigurationFactory(), ApplicationProperties.getProperties()),
+		//@formatter:off
+		this(new P2InspectorServerFactory(new ThreadPoolFactory(PROPERTIES),
+				new ConnectorFactory(new HttpConfigurationFactory(), PROPERTIES),
 				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
-						new GsonBuilder().setPrettyPrinting().create(),
-						Platform.getLog(Activator.getContext().getBundle()))));
+						new RootContextHandlerFactory(new RootHandler.Factory(LOG)),
+						new RepositoryNameContextHandlerFactory(new RepositoryNameHandler.Factory(GSON, LOG)),
+						new RepositoryDescriptionContextHandlerFactory(new RepositoryDescriptionHandler.Factory(GSON, LOG)),
+						new InstallableUnitContextHandlerFactory(new InstallableUnitHandler.Factory(GSON, LOG)))));
+		//@formatter:on
 	}
 
 	/**

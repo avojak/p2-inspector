@@ -17,6 +17,23 @@ import com.google.gson.Gson;
  * name.
  */
 public class RepositoryNameHandler extends AbstractMetadataRequestHandler {
+	
+	public static class Factory {
+		
+		private final Gson gson;
+		private final ILog log;
+		
+		public Factory(final Gson gson, final ILog log) {
+			this.gson = gson;
+			this.log = log;
+		}
+		
+		public RepositoryNameHandler create(final IMetadataRepositoryManager metadataManager,
+				final IArtifactRepositoryManager artifactManager) {
+			return new RepositoryNameHandler(metadataManager, artifactManager, gson, log);
+		}
+		
+	}
 
 	public RepositoryNameHandler(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager, final Gson gson, final ILog log) {

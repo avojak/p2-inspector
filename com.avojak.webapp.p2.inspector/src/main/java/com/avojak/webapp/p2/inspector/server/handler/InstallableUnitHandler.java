@@ -21,6 +21,23 @@ import com.google.gson.Gson;
  * installable units.
  */
 public class InstallableUnitHandler extends AbstractMetadataRequestHandler {
+	
+public static class Factory {
+		
+		private final Gson gson;
+		private final ILog log;
+		
+		public Factory(final Gson gson, final ILog log) {
+			this.gson = gson;
+			this.log = log;
+		}
+		
+		public InstallableUnitHandler create(final IMetadataRepositoryManager metadataManager,
+				final IArtifactRepositoryManager artifactManager) {
+			return new InstallableUnitHandler(metadataManager, artifactManager, gson, log);
+		}
+		
+	}
 
 	public InstallableUnitHandler(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager, final Gson gson, final ILog log) {

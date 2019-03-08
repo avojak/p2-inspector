@@ -22,10 +22,10 @@ public class ConnectorFactory {
 	/**
 	 * Constructor.
 	 * 
-	 * @param httpConfigurationFactory The {@link HttpConfigurationFactory}. Cannot
-	 *                                 be null.
-	 * @param properties               The {@link ApplicationProperties}. Cannot be
-	 *                                 null.
+	 * @param httpConfigurationFactory
+	 *            The {@link HttpConfigurationFactory}. Cannot be null.
+	 * @param properties
+	 *            The {@link ApplicationProperties}. Cannot be null.
 	 */
 	public ConnectorFactory(final HttpConfigurationFactory httpConfigurationFactory,
 			final ApplicationProperties properties) {
@@ -37,8 +37,9 @@ public class ConnectorFactory {
 	/**
 	 * Creates the connector.
 	 * 
-	 * @param server The {@link Server} for which the connector is being created.
-	 *               Cannot be null.
+	 * @param server
+	 *            The {@link Server} for which the connector is being created.
+	 *            Cannot be null.
 	 * @return The non-null {@link Connector}.
 	 */
 	public Connector create(final Server server) {
@@ -51,9 +52,12 @@ public class ConnectorFactory {
 	}
 
 	private int getPort() {
+		//@formatter:off
 		final Optional<String> portEnvironmentVariable = Optional.fromNullable(System.getenv("PORT"));
-		return portEnvironmentVariable.isPresent() ? Integer.valueOf(portEnvironmentVariable.get())
+		return portEnvironmentVariable.isPresent() 
+				? Integer.valueOf(portEnvironmentVariable.get())
 				: properties.getDefaultPort();
+		//@formatter:on
 	}
 
 }

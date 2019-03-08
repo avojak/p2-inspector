@@ -9,6 +9,20 @@ import org.eclipse.jetty.server.Request;
 
 public class RootHandler extends AbstractRequestHandler {
 	
+	public static class Factory {
+		
+		private final ILog log;
+		
+		public Factory(final ILog log) {
+			this.log = log;
+		}
+		
+		public RootHandler create() {
+			return new RootHandler(log);
+		}
+		
+	}
+	
 	public RootHandler(final ILog log) {
 		super(log);
 	}
