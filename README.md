@@ -124,7 +124,6 @@ The resulting source should look like this:
 * [Tycho](https://www.eclipse.org/tycho/) - Building the Eclipse plugin
 * [Maven](https://maven.apache.org/) - Dependency management
 * [Jetty](https://www.eclipse.org/jetty/) - Embedded web server
-* [Dockerfile Maven](https://github.com/spotify/dockerfile-maven) - Building the Docker image
 
 ## Versioning
 
