@@ -25,6 +25,15 @@ Artifacts are build in:
 com.avojak.webapp.p2.inspector.packaging/target/products/com.avojak.webapp.p2.inspector.product/
 ```
 
+### Docker
+
+After installing, you can build the Docker image:
+
+```
+$ cd ..
+$ docker build --tag avojak/p2-inspector:latest .
+```
+
 ## Usage
 
 Different executables are provided for various platforms (Windows, macOS, Linux).
@@ -39,16 +48,25 @@ $ ./p2-inspector
 
 ### Docker
 
-Docker is supported via the [Dockerfile Maven plugin](https://github.com/spotify/dockerfile-maven).
-
 ```
-$ mvn package
-$ docker run --rm -p 8081:8081 avojak/p2-inspector:1.0.0-SNAPSHOT
+$ docker run --rm -p 8081:8081 avojak/p2-inspector:latest
 ```
 
 ## Deployment
 
-TODO
+The recommended method of deployment is via the Docker image, although any of the platform-specific products may also be used.
+
+## Build System Configuration
+
+Use of a CI/CD platform requires the following environment variables be set:
+
+* `DOCKERHUB_USERNAME`
+* `DOCKERHUB_PASSWORD`
+* `HEROKU_USERNAME`
+* `HEROKU_PASSWORD`
+* `SONATYPE_USERNAME`
+* `SONATYPE_PASSWORD`
+* `HEROKU_API_KEY`
 
 ## PDE Target Definition
 
