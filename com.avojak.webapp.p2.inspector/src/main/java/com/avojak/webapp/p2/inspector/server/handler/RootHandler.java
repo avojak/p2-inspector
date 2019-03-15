@@ -1,5 +1,7 @@
 package com.avojak.webapp.p2.inspector.server.handler;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -27,7 +29,7 @@ public class RootHandler extends AbstractRequestHandler {
 		 *            The {@link ILog}. Cannot be null.
 		 */
 		public Factory(final ILog log) {
-			this.log = log;
+			this.log = checkNotNull(log, "log cannot be null");
 		}
 
 		/**
@@ -52,7 +54,7 @@ public class RootHandler extends AbstractRequestHandler {
 	}
 
 	@Override
-	protected void handle(final Request baseRequest, final PrintWriter out) throws ServletException {
+	public void handle(final Request baseRequest, final PrintWriter out) throws ServletException {
 		out.println("OK");
 	}
 

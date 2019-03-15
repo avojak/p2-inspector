@@ -35,8 +35,8 @@ public class RepositoryDescriptionHandler extends AbstractMetadataRequestHandler
 		 *            The {@link ILog}. Cannot be null.
 		 */
 		public Factory(final Gson gson, final ILog log) {
-			this.gson = gson;
-			this.log = log;
+			this.gson = checkNotNull(gson, "gson cannot be null");
+			this.log = checkNotNull(log, "log cannot be null");
 		}
 
 		/**
@@ -73,7 +73,7 @@ public class RepositoryDescriptionHandler extends AbstractMetadataRequestHandler
 	}
 
 	@Override
-	protected void handle(final IMetadataRepository metadataRepository, final IArtifactRepository artifactRepository,
+	public void handle(final IMetadataRepository metadataRepository, final IArtifactRepository artifactRepository,
 			final PrintWriter out) {
 		checkNotNull(metadataManager, "metadataManager cannot be null");
 //		checkNotNull(artifactRepository, "artifactRepository cannot be null");

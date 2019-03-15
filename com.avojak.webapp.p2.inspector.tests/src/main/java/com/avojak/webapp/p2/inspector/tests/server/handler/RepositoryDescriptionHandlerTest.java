@@ -3,14 +3,8 @@ package com.avojak.webapp.p2.inspector.tests.server.handler;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Set;
 
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.equinox.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.p2.query.IQueryResult;
-import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
@@ -21,14 +15,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.avojak.webapp.p2.inspector.server.handler.InstallableUnitHandler;
+import com.avojak.webapp.p2.inspector.server.handler.RepositoryDescriptionHandler;
 import com.google.gson.Gson;
 
 /**
- * Test class for {@link InstallableUnitHandler}.
+ * Test class for {@link RepositoryDescriptionHandler}.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class InstallableUnitHandlerTest {
+public class RepositoryDescriptionHandlerTest {
 
 	@Mock
 	private Gson gson;
@@ -51,19 +45,13 @@ public class InstallableUnitHandlerTest {
 	@Mock
 	private PrintWriter printWriter;
 
-	@Mock
-	private IQueryResult<IInstallableUnit> result;
-
-	@Mock
-	private IInstallableUnit iu;
-
 	/**
 	 * Tests that the factory constructor throws an exception when the given
 	 * {@link Gson} is null.
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testFactoryConstructor_NullGson() {
-		new InstallableUnitHandler.Factory(null, log);
+		new RepositoryDescriptionHandler.Factory(null, log);
 	}
 
 	/**
@@ -72,57 +60,53 @@ public class InstallableUnitHandlerTest {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testFactoryConstructor_NullLog() {
-		new InstallableUnitHandler.Factory(gson, null);
+		new RepositoryDescriptionHandler.Factory(gson, null);
 	}
 
 	/**
 	 * Tests that the factory creates a non-null instance of
-	 * {@link InstallableUnitHandler}.
+	 * {@link RepositoryDescriptionHandler}.
 	 */
 	@Test
 	public void testFactoryCreate() {
-		assertNotNull(new InstallableUnitHandler.Factory(gson, log).create(metadataManager, artifactManager));
+		assertNotNull(new RepositoryDescriptionHandler.Factory(gson, log).create(metadataManager, artifactManager));
 	}
 
 	/**
 	 * Tests that
-	 * {@link InstallableUnitHandler#handle(IMetadataRepository, IArtifactRepository, PrintWriter)}
+	 * {@link RepositoryDescriptionHandler#handle(IMetadataRepository, IArtifactRepository, PrintWriter)}
 	 * throws an exception when the given {@link IMetadataRepositoryManager} is
 	 * null.
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testHandle_NullMetadataManager() {
-		new InstallableUnitHandler(metadataManager, artifactManager, gson, log).handle(null, artifactRepository,
+		new RepositoryDescriptionHandler(metadataManager, artifactManager, gson, log).handle(null, artifactRepository,
 				printWriter);
 	}
 
 	/**
 	 * Tests that
-	 * {@link InstallableUnitHandler#handle(IMetadataRepository, IArtifactRepository, PrintWriter)}
+	 * {@link RepositoryDescriptionHandler#handle(IMetadataRepository, IArtifactRepository, PrintWriter)}
 	 * throws an exception when the given {@link PrintWriter} is null.
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testHandle_NullPrintWriter() {
-		new InstallableUnitHandler(metadataManager, artifactManager, gson, log).handle(metadataRepository,
+		new RepositoryDescriptionHandler(metadataManager, artifactManager, gson, log).handle(metadataRepository,
 				artifactRepository, null);
 	}
 
 	/**
 	 * Tests
-	 * {@link InstallableUnitHandler#handle(IMetadataRepository, IArtifactRepository, PrintWriter)}.
+	 * {@link RepositoryDescriptionHandler#handle(IMetadataRepository, IArtifactRepository, PrintWriter)}.
 	 */
 	@Test
 	public void testHandle() {
-		Mockito.when(metadataRepository.query(Mockito.eq(QueryUtil.ALL_UNITS), Mockito.isA(NullProgressMonitor.class)))
-				.thenReturn(result);
-		final Set<IInstallableUnit> resultSet = Collections.singleton(iu);
-		Mockito.when(result.toUnmodifiableSet()).thenReturn(resultSet);
-		Mockito.when(gson.toJson(resultSet)).thenReturn("mock");
-
-		new InstallableUnitHandler(metadataManager, artifactManager, gson, log).handle(metadataRepository,
+		Mockito.when(metadataRepository.getDescription()).thenReturn("Mock description");
+		
+		new RepositoryDescriptionHandler(metadataManager, artifactManager, gson, log).handle(metadataRepository,
 				artifactRepository, printWriter);
-
-		Mockito.verify(printWriter).println("mock");
+		
+		Mockito.verify(printWriter).println("Mock description");
 	}
 
 }
