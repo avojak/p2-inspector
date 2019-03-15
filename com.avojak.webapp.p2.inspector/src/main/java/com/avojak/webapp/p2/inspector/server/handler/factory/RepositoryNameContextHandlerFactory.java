@@ -7,7 +7,6 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.jetty.server.handler.ContextHandler;
 
 import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
-import com.avojak.webapp.p2.inspector.server.handler.RootHandler;
 
 public class RepositoryNameContextHandlerFactory {
 	

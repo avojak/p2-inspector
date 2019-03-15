@@ -10,6 +10,7 @@ import com.avojak.webapp.p2.inspector.server.factory.ConnectorFactory;
 import com.avojak.webapp.p2.inspector.server.factory.HandlerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.HttpConfigurationFactory;
 import com.avojak.webapp.p2.inspector.server.factory.P2InspectorServerFactory;
+import com.avojak.webapp.p2.inspector.server.factory.ServerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.ThreadPoolFactory;
 import com.avojak.webapp.p2.inspector.server.handler.InstallableUnitHandler;
 import com.avojak.webapp.p2.inspector.server.handler.RepositoryDescriptionHandler;
@@ -36,7 +37,8 @@ public class Application implements IApplication {
 	 */
 	public Application() {
 		//@formatter:off
-		this(new P2InspectorServerFactory(new ThreadPoolFactory(ApplicationProperties.getProperties()),
+		this(new P2InspectorServerFactory(new ServerFactory(), 
+				new ThreadPoolFactory(ApplicationProperties.getProperties()),
 				new ConnectorFactory(new HttpConfigurationFactory(), ApplicationProperties.getProperties()),
 				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
 						new RootContextHandlerFactory(new RootHandler.Factory(

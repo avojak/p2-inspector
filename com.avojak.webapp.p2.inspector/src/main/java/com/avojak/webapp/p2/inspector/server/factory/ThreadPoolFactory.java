@@ -28,7 +28,7 @@ public class ThreadPoolFactory {
 	 * 
 	 * @return The non-null {@link ThreadPool}.
 	 */
-	public ThreadPool create() {
+	public QueuedThreadPool create() {
 		final QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMaxThreads(properties.getMaxThreads());
 		return threadPool;

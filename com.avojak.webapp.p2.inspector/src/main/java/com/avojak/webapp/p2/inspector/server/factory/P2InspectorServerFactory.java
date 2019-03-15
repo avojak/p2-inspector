@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.Server;
  */
 public class P2InspectorServerFactory {
 
+	private final ServerFactory serverFactory;
 	private final ThreadPoolFactory threadPoolFactory;
 	private final ConnectorFactory connectorFactory;
 	private final HandlerFactory handlerFactory;
@@ -16,12 +17,16 @@ public class P2InspectorServerFactory {
 	/**
 	 * Constructor.
 	 * 
-	 * @param threadPoolFactory The {@link ThreadPoolFactory}. Cannot be null.
-	 * @param connectorFactory  The {@link ConnectorFactory}. Cannot be null.
-	 * @param handlerFactory    The {@link HandlerFactory}. Cannot be null.
+	 * @param threadPoolFactory
+	 *            The {@link ThreadPoolFactory}. Cannot be null.
+	 * @param connectorFactory
+	 *            The {@link ConnectorFactory}. Cannot be null.
+	 * @param handlerFactory
+	 *            The {@link HandlerFactory}. Cannot be null.
 	 */
-	public P2InspectorServerFactory(final ThreadPoolFactory threadPoolFactory, final ConnectorFactory connectorFactory,
-			final HandlerFactory handlerFactory) {
+	public P2InspectorServerFactory(final ServerFactory serverFactory, final ThreadPoolFactory threadPoolFactory,
+			final ConnectorFactory connectorFactory, final HandlerFactory handlerFactory) {
+		this.serverFactory = checkNotNull(serverFactory, "serverFactory cannot be null");
 		this.threadPoolFactory = checkNotNull(threadPoolFactory, "threadPoolFactory cannot be null");
 		this.connectorFactory = checkNotNull(connectorFactory, "connectorFactory cannot be null");
 		this.handlerFactory = checkNotNull(handlerFactory, "handlerFactory cannot be null");
@@ -33,7 +38,7 @@ public class P2InspectorServerFactory {
 	 * @return The non-null {@link Server}.
 	 */
 	public Server create() {
-		final Server server = new Server(threadPoolFactory.create());
+		final Server server = serverFactory.create(threadPoolFactory.create());
 		server.addConnector(connectorFactory.create(server));
 		server.setHandler(handlerFactory.create());
 		return server;
