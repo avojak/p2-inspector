@@ -13,28 +13,60 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import com.google.gson.Gson;
 
 /**
- * Implementation of {@link AbstractMetadataRequestHandler} to retrieve the repository
- * description.
+ * Implementation of {@link AbstractMetadataRequestHandler} to retrieve the
+ * repository description.
  */
 public class RepositoryDescriptionHandler extends AbstractMetadataRequestHandler {
-	
+
+	/**
+	 * Factory class to create instances of {@link RepositoryDescriptionHandler}.
+	 */
 	public static class Factory {
-		
+
 		private final Gson gson;
 		private final ILog log;
-		
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param gson
+		 *            The {@link Gson}. Cannot be null.
+		 * @param log
+		 *            The {@link ILog}. Cannot be null.
+		 */
 		public Factory(final Gson gson, final ILog log) {
 			this.gson = gson;
 			this.log = log;
 		}
-		
+
+		/**
+		 * Creates a new instance of {@link RepositoryDescriptionHandler}.
+		 * 
+		 * @param metadataManager
+		 *            The {@link IMetadataRepositoryManager}. Cannot be null.
+		 * @param artifactManager
+		 *            The {@link IArtifactRepositoryManager}. Cannot be null.
+		 * @return The new, non-null {@link RepositoryDescriptionHandler}.
+		 */
 		public RepositoryDescriptionHandler create(final IMetadataRepositoryManager metadataManager,
 				final IArtifactRepositoryManager artifactManager) {
 			return new RepositoryDescriptionHandler(metadataManager, artifactManager, gson, log);
 		}
-		
+
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param metadataManager
+	 *            The {@link IMetadataRepositoryManager}. Cannot be null.
+	 * @param artifactManager
+	 *            The {@link IArtifactRepositoryManager}. Cannot be null.
+	 * @param gson
+	 *            The {@link Gson}. Cannot be null.
+	 * @param log
+	 *            The {@link ILog}. Cannot be null.
+	 */
 	public RepositoryDescriptionHandler(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager, final Gson gson, final ILog log) {
 		super(metadataManager, artifactManager, gson, log);

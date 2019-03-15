@@ -58,9 +58,10 @@ public abstract class AbstractMetadataRequestHandler extends AbstractRequestHand
 
 	@Override
 	public void handle(final Request baseRequest, final PrintWriter out) throws ServletException, BadRequestException {
-
+		checkNotNull(baseRequest, "baseRequest cannot be null");
+		checkNotNull(out, "out cannot be null");
+		
 		final URI repo = getRepositoryURI(baseRequest);
-
 		metadataManager.addRepository(repo);
 //		artifactManager.addRepository(repo);
 
@@ -75,7 +76,6 @@ public abstract class AbstractMetadataRequestHandler extends AbstractRequestHand
 		}
 
 		handle(metadataRepository, null, out);
-
 	}
 
 	/**

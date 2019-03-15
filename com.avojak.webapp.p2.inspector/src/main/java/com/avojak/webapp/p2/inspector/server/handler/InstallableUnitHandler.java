@@ -21,31 +21,63 @@ import com.google.gson.Gson;
  * installable units.
  */
 public class InstallableUnitHandler extends AbstractMetadataRequestHandler {
-	
-public static class Factory {
-		
+
+	/**
+	 * Factory class to create instances of {@link InstallableUnitHandler}.
+	 */
+	public static class Factory {
+
 		private final Gson gson;
 		private final ILog log;
-		
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param gson
+		 *            The {@link Gson}. Cannot be null.
+		 * @param log
+		 *            The {@link ILog}. Cannot be null.
+		 */
 		public Factory(final Gson gson, final ILog log) {
-			this.gson = gson;
-			this.log = log;
+			this.gson = checkNotNull(gson, "gson cannot be null");
+			this.log = checkNotNull(log, "log cannot be null");
 		}
-		
+
+		/**
+		 * Creates a new instance of {@link InstallableUnitHandler}.
+		 * 
+		 * @param metadataManager
+		 *            The {@link IMetadataRepositoryManager}. Cannot be null.
+		 * @param artifactManager
+		 *            The {@link IArtifactRepositoryManager}. Cannot be null.
+		 * @return The new, non-null {@link InstallableUnitHandler}.
+		 */
 		public InstallableUnitHandler create(final IMetadataRepositoryManager metadataManager,
 				final IArtifactRepositoryManager artifactManager) {
 			return new InstallableUnitHandler(metadataManager, artifactManager, gson, log);
 		}
-		
+
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param metadataManager
+	 *            The {@link IMetadataRepositoryManager}. Cannot be null.
+	 * @param artifactManager
+	 *            The {@link IArtifactRepositoryManager}. Cannot be null.
+	 * @param gson
+	 *            The {@link Gson}. Cannot be null.
+	 * @param log
+	 *            The {@link ILog}. Cannot be null.
+	 */
 	public InstallableUnitHandler(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager, final Gson gson, final ILog log) {
 		super(metadataManager, artifactManager, gson, log);
 	}
 
 	@Override
-	protected void handle(final IMetadataRepository metadataRepository, final IArtifactRepository artifactRepository,
+	public void handle(final IMetadataRepository metadataRepository, final IArtifactRepository artifactRepository,
 			final PrintWriter out) {
 		checkNotNull(metadataManager, "metadataManager cannot be null");
 //		checkNotNull(artifactRepository, "artifactRepository cannot be null");

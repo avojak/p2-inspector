@@ -22,11 +22,17 @@ import com.google.common.net.MediaType;
 public abstract class AbstractRequestHandler extends AbstractHandler {
 
 	protected final ILog log;
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param log
+	 *            The {@link ILog}. Cannot be null.
+	 */
 	protected AbstractRequestHandler(final ILog log) {
 		this.log = checkNotNull(log, "log cannot be null");
 	}
-	
+
 	@Override
 	public void handle(final String target, final Request baseRequest, final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException, ServletException {
@@ -45,8 +51,10 @@ public abstract class AbstractRequestHandler extends AbstractHandler {
 	/**
 	 * Handles the request.
 	 *
-	 * @param baseRequest The {@link Request}. Cannot be null.
-	 * @param out         The HTTP response {@link PrintWriter}. Cannot be null.
+	 * @param baseRequest
+	 *            The {@link Request}. Cannot be null.
+	 * @param out
+	 *            The HTTP response {@link PrintWriter}. Cannot be null.
 	 * @throws ServletException
 	 * @throws BadRequestException
 	 */
