@@ -2,6 +2,8 @@ package com.avojak.webapp.p2.inspector.server.factory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
@@ -9,10 +11,9 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 
+import com.avojak.webapp.p2.inspector.Activator;
 import com.avojak.webapp.p2.inspector.osgi.ProvisioningAgentProvider;
-import com.avojak.webapp.p2.inspector.server.handler.factory.InstallableUnitContextHandlerFactory;
-import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryDescriptionContextHandlerFactory;
-import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryNameContextHandlerFactory;
+import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryContextHandlerFactory;
 import com.avojak.webapp.p2.inspector.server.handler.factory.RootContextHandlerFactory;
 
 /**
@@ -22,9 +23,8 @@ public class HandlerFactory {
 
 	private final ProvisioningAgentProvider agentProvider;
 	private final RootContextHandlerFactory rootContextHandlerFactory;
-	private final RepositoryNameContextHandlerFactory repositoryNameContextHandlerFactory;
-	private final RepositoryDescriptionContextHandlerFactory repositoryDescriptionContextHandlerFactory;
-	private final InstallableUnitContextHandlerFactory installableUnitContextHandlerFactory;
+	private final RepositoryContextHandlerFactory repositoryContextHandlerFactory;
+	private final ILog log;
 
 	/**
 	 * Constructor.
@@ -33,28 +33,20 @@ public class HandlerFactory {
 	 *            The {@link ProvisioningAgentProvider}. Cannot be null.
 	 * @param rootContextHandlerFactory
 	 *            The {@link RootContextHandlerFactory}. Cannot be null.
-	 * @param repositoryNameContextHandlerFactory
-	 *            The {@link RepositoryNameContextHandlerFactory}. Cannot be null.
-	 * @param repositoryDescriptionContextHandlerFactory
-	 *            The {@link RepositoryDescriptionContextHandlerFactory}. Cannot be
-	 *            null.
-	 * @param installableUnitContextHandlerFactory
-	 *            The {@link InstallableUnitContextHandlerFactory}. Cannot be null.
+	 * @param repositoryContextHandlerFactory
+	 *            The {@link RepositoryContextHandlerFactory}. Cannot be null.
+	 * @param log
+	 *            The {@link ILog}. Cannot be null.
 	 */
 	public HandlerFactory(final ProvisioningAgentProvider agentProvider,
 			final RootContextHandlerFactory rootContextHandlerFactory,
-			final RepositoryNameContextHandlerFactory repositoryNameContextHandlerFactory,
-			final RepositoryDescriptionContextHandlerFactory repositoryDescriptionContextHandlerFactory,
-			final InstallableUnitContextHandlerFactory installableUnitContextHandlerFactory) {
+			final RepositoryContextHandlerFactory repositoryContextHandlerFactory, final ILog log) {
 		this.agentProvider = checkNotNull(agentProvider, "agentProvider cannot be null");
 		this.rootContextHandlerFactory = checkNotNull(rootContextHandlerFactory,
 				"rootContextHandlerFactory cannot be null");
-		this.repositoryNameContextHandlerFactory = checkNotNull(repositoryNameContextHandlerFactory,
-				"repositoryNameContextHandlerFactory cannot be null");
-		this.repositoryDescriptionContextHandlerFactory = checkNotNull(repositoryDescriptionContextHandlerFactory,
-				"repositoryDescriptionContextHandlerFactory cannot be null");
-		this.installableUnitContextHandlerFactory = checkNotNull(installableUnitContextHandlerFactory,
-				"installableUnitContextHandlerFactory cannot be null");
+		this.repositoryContextHandlerFactory = checkNotNull(repositoryContextHandlerFactory,
+				"repositoryContextHandlerFactory cannot be null");
+		this.log = checkNotNull(log, "log cannot be null");
 	}
 
 	/**
@@ -70,17 +62,23 @@ public class HandlerFactory {
 		} catch (final ProvisionException e) {
 			throw new RuntimeException(e);
 		}
-		final IArtifactRepositoryManager artifactManager = null;
+		final IArtifactRepositoryManager artifactManager;
+		try {
+			artifactManager = (IArtifactRepositoryManager) agentProvider.getAgent(null)
+					.getService(IArtifactRepositoryManager.SERVICE_NAME);
+		} catch (final ProvisionException e) {
+			throw new RuntimeException(e);
+		}
+
+		if (metadataManager == null || artifactManager == null) {
+			log.log(new Status(Status.WARNING, Activator.PLUGIN_ID, "metadataManager or artifactManager is null"));
+		}
 
 		final ContextHandler rootContext = rootContextHandlerFactory.create();
-		final ContextHandler nameContext = repositoryNameContextHandlerFactory.create(metadataManager, artifactManager);
-		final ContextHandler descriptionContext = repositoryDescriptionContextHandlerFactory.create(metadataManager,
-				artifactManager);
-		final ContextHandler installableUnitContext = installableUnitContextHandlerFactory.create(metadataManager,
+		final ContextHandler repositoryContext = repositoryContextHandlerFactory.create(metadataManager,
 				artifactManager);
 
-		final Handler[] handlers = new Handler[] { rootContext, nameContext, descriptionContext,
-				installableUnitContext };
+		final Handler[] handlers = new Handler[] { rootContext, repositoryContext };
 
 		final ContextHandlerCollection contexts = new ContextHandlerCollection();
 		contexts.setHandlers(handlers);

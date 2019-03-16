@@ -2,6 +2,7 @@ package com.avojak.webapp.p2.inspector.tests.server.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
@@ -17,9 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.avojak.webapp.p2.inspector.osgi.ProvisioningAgentProvider;
 import com.avojak.webapp.p2.inspector.server.factory.HandlerFactory;
-import com.avojak.webapp.p2.inspector.server.handler.factory.InstallableUnitContextHandlerFactory;
-import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryDescriptionContextHandlerFactory;
-import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryNameContextHandlerFactory;
+import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryContextHandlerFactory;
 import com.avojak.webapp.p2.inspector.server.handler.factory.RootContextHandlerFactory;
 
 /**
@@ -41,17 +40,13 @@ public class HandlerFactoryTest {
 	private RootContextHandlerFactory rootContextHandlerFactory;
 
 	@Mock
-	private RepositoryNameContextHandlerFactory repositoryNameContextHandlerFactory;
+	private RepositoryContextHandlerFactory repositoryContextHandlerFactory;
 
 	@Mock
-	private RepositoryDescriptionContextHandlerFactory repositoryDescriptionContextHandlerFactory;
+	private ContextHandler rootContextHandler, repositoryContextHandler;
 
 	@Mock
-	private InstallableUnitContextHandlerFactory installableUnitContextHandlerFactory;
-
-	@Mock
-	private ContextHandler rootContextHandler, repositoryNameContextHandler, repositoryDescriptionContextHandler,
-			installableUnitContextHandler;
+	private ILog log;
 
 	private HandlerFactory factory;
 
@@ -67,20 +62,13 @@ public class HandlerFactoryTest {
 		Mockito.when(agent.getService(IMetadataRepositoryManager.SERVICE_NAME)).thenReturn(metadataManager);
 
 		Mockito.when(rootContextHandlerFactory.create()).thenReturn(rootContextHandler);
-		Mockito.when(repositoryNameContextHandlerFactory.create(metadataManager, null))
-				.thenReturn(repositoryNameContextHandler);
-		Mockito.when(repositoryDescriptionContextHandlerFactory.create(metadataManager, null))
-				.thenReturn(repositoryDescriptionContextHandler);
-		Mockito.when(installableUnitContextHandlerFactory.create(metadataManager, null))
-				.thenReturn(installableUnitContextHandler);
+		Mockito.when(repositoryContextHandlerFactory.create(metadataManager, null))
+				.thenReturn(repositoryContextHandler);
 
 		Mockito.when(rootContextHandler.getChildHandlers()).thenReturn(new Handler[] {});
-		Mockito.when(repositoryNameContextHandler.getChildHandlers()).thenReturn(new Handler[] {});
-		Mockito.when(repositoryDescriptionContextHandler.getChildHandlers()).thenReturn(new Handler[] {});
-		Mockito.when(installableUnitContextHandler.getChildHandlers()).thenReturn(new Handler[] {});
+		Mockito.when(repositoryContextHandler.getChildHandlers()).thenReturn(new Handler[] {});
 
-		factory = new HandlerFactory(agentProvider, rootContextHandlerFactory, repositoryNameContextHandlerFactory,
-				repositoryDescriptionContextHandlerFactory, installableUnitContextHandlerFactory);
+		factory = new HandlerFactory(agentProvider, rootContextHandlerFactory, repositoryContextHandlerFactory, log);
 	}
 
 	/**
@@ -89,8 +77,7 @@ public class HandlerFactoryTest {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testConstructor_NullAgentProvider() {
-		new HandlerFactory(null, rootContextHandlerFactory, repositoryNameContextHandlerFactory,
-				repositoryDescriptionContextHandlerFactory, installableUnitContextHandlerFactory);
+		new HandlerFactory(null, rootContextHandlerFactory, repositoryContextHandlerFactory, log);
 	}
 
 	/**
@@ -99,38 +86,24 @@ public class HandlerFactoryTest {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testConstructor_NullRootContextHandlerFactory() {
-		new HandlerFactory(agentProvider, null, repositoryNameContextHandlerFactory,
-				repositoryDescriptionContextHandlerFactory, installableUnitContextHandlerFactory);
+		new HandlerFactory(agentProvider, null, repositoryContextHandlerFactory, log);
 	}
 
 	/**
-	 * Tests that the constructor throws an exception when the repository name
-	 * context handler factory is null.
+	 * Tests that the constructor throws an exception when the repository context
+	 * handler factory is null.
 	 */
 	@Test(expected = NullPointerException.class)
-	public void testConstructor_NullRepositoryNameContextHandlerFactory() {
-		new HandlerFactory(agentProvider, rootContextHandlerFactory, null, repositoryDescriptionContextHandlerFactory,
-				installableUnitContextHandlerFactory);
+	public void testConstructor_NullRepositoryContextHandlerFactory() {
+		new HandlerFactory(agentProvider, rootContextHandlerFactory, null, log);
 	}
 
 	/**
-	 * Tests that the constructor throws an exception when the repository
-	 * description context handler factory is null.
+	 * Tests that the constructor throws an exception when the log instance is null.
 	 */
 	@Test(expected = NullPointerException.class)
-	public void testConstructor_NullRepositoryDescriptionContextHandlerFactory() {
-		new HandlerFactory(agentProvider, rootContextHandlerFactory, repositoryNameContextHandlerFactory, null,
-				installableUnitContextHandlerFactory);
-	}
-
-	/**
-	 * Tests that the constructor throws an exception when the installable unit
-	 * context handler factory is null.
-	 */
-	@Test(expected = NullPointerException.class)
-	public void testConstructor_NullInstallableUnitContextHandlerFactory() {
-		new HandlerFactory(agentProvider, rootContextHandlerFactory, repositoryNameContextHandlerFactory,
-				repositoryDescriptionContextHandlerFactory, null);
+	public void testConstructor_NullLog() {
+		new HandlerFactory(agentProvider, rootContextHandlerFactory, repositoryContextHandlerFactory, null);
 	}
 
 	/**
@@ -153,11 +126,9 @@ public class HandlerFactoryTest {
 	public void testCreate() {
 		final ContextHandlerCollection handler = (ContextHandlerCollection) factory.create();
 		final Handler[] handlers = handler.getHandlers();
-		assertEquals(4, handlers.length);
+		assertEquals(2, handlers.length);
 		assertEquals(rootContextHandler, handlers[0]);
-		assertEquals(repositoryNameContextHandler, handlers[1]);
-		assertEquals(repositoryDescriptionContextHandler, handlers[2]);
-		assertEquals(installableUnitContextHandler, handlers[3]);
+		assertEquals(repositoryContextHandler, handlers[1]);
 	}
 
 }

@@ -12,13 +12,9 @@ import com.avojak.webapp.p2.inspector.server.factory.HttpConfigurationFactory;
 import com.avojak.webapp.p2.inspector.server.factory.P2InspectorServerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.ServerFactory;
 import com.avojak.webapp.p2.inspector.server.factory.ThreadPoolFactory;
-import com.avojak.webapp.p2.inspector.server.handler.InstallableUnitHandler;
-import com.avojak.webapp.p2.inspector.server.handler.RepositoryDescriptionHandler;
-import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
+import com.avojak.webapp.p2.inspector.server.handler.RepositoryHandler;
 import com.avojak.webapp.p2.inspector.server.handler.RootHandler;
-import com.avojak.webapp.p2.inspector.server.handler.factory.InstallableUnitContextHandlerFactory;
-import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryDescriptionContextHandlerFactory;
-import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryNameContextHandlerFactory;
+import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryContextHandlerFactory;
 import com.avojak.webapp.p2.inspector.server.handler.factory.RootContextHandlerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,12 +39,9 @@ public class Application implements IApplication {
 				new HandlerFactory(new ProvisioningAgentProvider(Activator.getContext()),
 						new RootContextHandlerFactory(new RootHandler.Factory(
 								Platform.getLog(Activator.getContext().getBundle()))),
-						new RepositoryNameContextHandlerFactory(new RepositoryNameHandler.Factory(GSON, 
+						new RepositoryContextHandlerFactory(new RepositoryHandler.Factory(GSON, 
 								Platform.getLog(Activator.getContext().getBundle()))),
-						new RepositoryDescriptionContextHandlerFactory(new RepositoryDescriptionHandler.Factory(GSON, 
-								Platform.getLog(Activator.getContext().getBundle()))),
-						new InstallableUnitContextHandlerFactory(new InstallableUnitHandler.Factory(GSON, 
-								Platform.getLog(Activator.getContext().getBundle()))))));
+						Platform.getLog(Activator.getContext().getBundle()))));
 		//@formatter:on
 	}
 

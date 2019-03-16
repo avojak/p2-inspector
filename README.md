@@ -16,7 +16,7 @@ Java 1.8+
 
 ```
 $ cd com.avojak.webapp.p2.inspector.releng
-$ mvn clean install
+$ mvn clean package
 ```
 
 Artifacts are build in:
@@ -51,6 +51,39 @@ $ ./p2-inspector
 ```
 $ docker run --rm -p 8081:8081 avojak/p2-inspector:latest
 ```
+
+To make a request to the REST service, make a `GET` request to the `/repository` endpoint with a `url` parameter for the desired p2 repository.
+
+For example:
+
+```
+$ curl http://localhost:8081/repository?url=http://example.com
+```
+
+The response will be a JSON object built from the `P2Repository` model.
+
+P2Repository model:
+
+* name: `String`
+* location: `String`
+* isCompressed: `Boolean`
+* lastModified: `Long`
+* groups: `IUGroup[]`
+
+IUGroup model:
+
+* name: `String`
+* id: `String`
+* description: `String`
+* copyright: `String`
+* licenses: `License[]`
+* version: `String`
+
+License model:
+
+* name: `String`
+* body: `String`
+* location: `String`
 
 ## Deployment
 
@@ -92,7 +125,7 @@ Under the Orbit site:
 
 The resulting source should look like this:
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target includeMode="feature" name="com.avojak.webapp.p2.inspector.target">
 	<locations>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">

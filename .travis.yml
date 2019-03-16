@@ -17,7 +17,7 @@ before_script:
 script:
 - mvn clean verify coveralls:report &&
   cd .. &&
-  docker build --tag avojak/p2-inspector:1.1.0-SNAPSHOT --tag avojak/p2-inspector:latest . &&
+  docker build --tag avojak/p2-inspector:2.0.0-SNAPSHOT --tag avojak/p2-inspector:latest . &&
   docker tag avojak/p2-inspector:latest registry.heroku.com/p2-inspector/web
 
 deploy:
@@ -25,7 +25,7 @@ deploy:
   skip_cleanup: true
   script:
     # Push to Docker Hub and Heroku, then perform the Heroku release
-    docker push avojak/p2-inspector:1.1.0-SNAPSHOT;
+    docker push avojak/p2-inspector:2.0.0-SNAPSHOT;
     docker push avojak/p2-inspector:latest;
     docker push registry.heroku.com/p2-inspector/web;
     heroku container:release web --app p2-inspector

@@ -11,20 +11,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
-import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryNameContextHandlerFactory;
+import com.avojak.webapp.p2.inspector.server.handler.RepositoryHandler;
+import com.avojak.webapp.p2.inspector.server.handler.factory.RepositoryContextHandlerFactory;
 
 /**
- * Test class for {@link RepositoryNameContextHandlerFactory}.
+ * Test class for {@link RepositoryContextHandlerFactory}.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RepositoryNameContextHandlerFactoryTest {
+public class RepositoryContextHandlerFactoryTest {
 
 	@Mock
-	private RepositoryNameHandler.Factory nameHandlerFactory;
+	private RepositoryHandler.Factory handlerFactory;
 
 	@Mock
-	private RepositoryNameHandler nameHandler;
+	private RepositoryHandler handler;
 
 	@Mock
 	private IMetadataRepositoryManager metadataManager;
@@ -38,22 +38,22 @@ public class RepositoryNameContextHandlerFactoryTest {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testConstructor_NullHandlerFactory() {
-		new RepositoryNameContextHandlerFactory(null);
+		new RepositoryContextHandlerFactory(null);
 	}
 
 	/**
 	 * Tests
-	 * {@link RepositoryNameContextHandlerFactory#create(IMetadataRepositoryManager, IArtifactRepositoryManager)}.
+	 * {@link RepositoryContextHandlerFactory#create(IMetadataRepositoryManager, IArtifactRepositoryManager)}.
 	 */
 	@Test
 	public void testCreate() {
-		Mockito.when(nameHandlerFactory.create(metadataManager, artifactManager)).thenReturn(nameHandler);
+		Mockito.when(handlerFactory.create(metadataManager, artifactManager)).thenReturn(handler);
 
-		final ContextHandler handler = new RepositoryNameContextHandlerFactory(nameHandlerFactory)
+		final ContextHandler contextHandler = new RepositoryContextHandlerFactory(handlerFactory)
 				.create(metadataManager, artifactManager);
 
-		assertEquals("/repository/name", handler.getContextPath());
-		assertEquals(nameHandler, handler.getHandler());
+		assertEquals("/repository", contextHandler.getContextPath());
+		assertEquals(handler, contextHandler.getHandler());
 	}
 
 }

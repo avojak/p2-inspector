@@ -6,23 +6,19 @@ import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.jetty.server.handler.ContextHandler;
 
-import com.avojak.webapp.p2.inspector.server.handler.RepositoryNameHandler;
+import com.avojak.webapp.p2.inspector.server.handler.RepositoryHandler;
 
-/**
- * Factory class to create and configure the repository name
- * {@link ContextHandler}.
- */
-public class RepositoryNameContextHandlerFactory {
+public class RepositoryContextHandlerFactory {
 
-	private final RepositoryNameHandler.Factory handlerFactory;
+	private final RepositoryHandler.Factory handlerFactory;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param handlerFactory
-	 *            The {@link RepositoryNameHandler.Factory}. Cannot be null.
+	 *            The {@link RepositoryHandler.Factory}. Cannot be null.
 	 */
-	public RepositoryNameContextHandlerFactory(final RepositoryNameHandler.Factory handlerFactory) {
+	public RepositoryContextHandlerFactory(final RepositoryHandler.Factory handlerFactory) {
 		this.handlerFactory = checkNotNull(handlerFactory, "handlerFactory cannot be null");
 	}
 
@@ -37,7 +33,7 @@ public class RepositoryNameContextHandlerFactory {
 	 */
 	public ContextHandler create(final IMetadataRepositoryManager metadataManager,
 			final IArtifactRepositoryManager artifactManager) {
-		final ContextHandler context = new ContextHandler("/repository/name");
+		final ContextHandler context = new ContextHandler("/repository");
 		context.setHandler(handlerFactory.create(metadataManager, artifactManager));
 		return context;
 	}
