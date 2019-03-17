@@ -1,6 +1,6 @@
 # P2 Inspector
 
-[![Build Status](https://travis-ci.org/avojak/p2-inspector.svg?branch=master)](https://travis-ci.org/avojak/p2-inspector) [![Coverage Status](https://coveralls.io/repos/github/avojak/p2-inspector/badge.svg?branch=master)](https://coveralls.io/github/avojak/p2-inspector?branch=master) [![License](https://img.shields.io/badge/license-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0) ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+[![Build Status](https://travis-ci.org/avojak/p2-inspector.svg?branch=master)](https://travis-ci.org/avojak/p2-inspector) [![Coverage Status](https://coveralls.io/repos/github/avojak/p2-inspector/badge.svg?branch=master)](https://coveralls.io/github/avojak/p2-inspector?branch=master) [![License](https://img.shields.io/badge/license-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0) ![GitHub release](https://img.shields.io/github/release/avojak/p2-inspector.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/avojak/p2-inspector.svg)
 
 P2 Inspector is a headless Eclipse plugin which exposes a REST interface for inspecting and retrieving the contents of a remote P2 repository.
 
